@@ -56,5 +56,4 @@ Note: both files are csv files.)]
 
 #### 5.3 **Screen Shot of result**
 
-    ![Screentshot of working day of each agent]
-    (https://github.com/Shashanknew47/DE_Assignments_projects_i/blob/main/hive_assignment_projects/mini_project_1.txt/Screenshots/days_of_agent_working.png)
+    ![Screentshot of working day of each agent](https://github.com/Shashanknew47/DE_Assignments_projects_i/blob/main/hive_assignment_projects/mini_project_1.txt/Screenshots/days_of_agent_working.png)
