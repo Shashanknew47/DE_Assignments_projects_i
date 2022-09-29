@@ -49,5 +49,6 @@ Note: both files are csv files.)]
     SELECT agent_name, count(date) as working_day FROM unique_table GROUP BY agent_name;
 
 #### 5.3 **Screen Shot of result**
-
+          ![](Screenshots/days_of_agent_working.png)
+          
     
