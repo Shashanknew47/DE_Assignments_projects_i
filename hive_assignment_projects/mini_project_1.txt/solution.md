@@ -5,7 +5,6 @@
 
 Note: both files are csv files.)]
 
-
 ## 1. Create a schema based on the given dataset
 
           CREATE TABLE agent_performance
@@ -24,16 +23,11 @@ Note: both files are csv files.)]
 
 ## 2. Dump the data inside the hdfs in the given schema location.
 
-
-
-
 ## 3. List of all agents' names.
 
         SELECT agent_name FROM agent_performance_part_bucket
 
-
 ## 4. Find out agent average rating.
-
 
     hive> SELECT avg(rating) as avg_rating FROM agent_performance_part_bucket;
 
@@ -42,10 +36,10 @@ Note: both files are csv files.)]
     Time taken: 46.589 seconds, Fetched: 1 row(s)
     hive>
 
-
 ## 5. Total working days for each agents
 
 #### 5.1
+
     - 30 days for each agent
 
 #### 5.2 **Query**
@@ -56,4 +50,4 @@ Note: both files are csv files.)]
 
 #### 5.3 **Screen Shot of result**
 
-    ![Screentshot of working day of each agent](https://github.com/Shashanknew47/DE_Assignments_projects_i/blob/main/hive_assignment_projects/mini_project_1.txt/Screenshots/days_of_agent_working.png)
+    ![working-day-of-each-agent](https://github.com/Shashanknew47/DE_Assignments_projects_i/blob/main/hive_assignment_projects/mini_project_1.txt/Screenshots/days_of_agent_working.png)
