@@ -49,5 +49,4 @@ Note: both files are csv files.)]
     SELECT agent_name, count(date) as working_day FROM unique_table GROUP BY agent_name;
 
 #### 5.3 **Screen Shot of result**
-
-    ![working-day-of-each-agent](https://github.com/Shashanknew47/DE_Assignments_projects_i/blob/main/hive_assignment_projects/mini_project_1.txt/Screenshots/days_of_agent_working.png)
+![working-day-of-each-agent](Screenshots/days_of_agent_working.png)
