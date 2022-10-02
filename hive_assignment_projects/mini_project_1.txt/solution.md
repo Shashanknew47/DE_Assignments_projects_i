@@ -7,21 +7,40 @@ Note: both files are csv files.)]
 
 ## 1. Create a schema based on the given dataset
 
-          CREATE TABLE agent_performance
-    >   (
-    >      id int,
-    >      date string,
-    >      total_chats int,
-    >      average_response_time string,
-    >      average_resolution_time string,
-    >      rating float,
-    >      feedback int
-    >      )
+        CREATE TABLE
+            (
+            id int,
+            agent_name string,
+            date string,
+            login_time string,
+            logout_logout string,
+            duration string
+            )
+            row format delimited
+            fields terminated by ','
+            tblproperties ("skip.header.line.count" = "1");
+
+
+        CREATE TABLE agent_performance
+       (
+          id int,
+          date string,
+          total_chats int,
+          average_response_time string,
+          average_resolution_time string,
+          rating float,
+          feedback int
+          )
 
     row format DELIMITED
-    fields TERMINATED by ',';
+    fields TERMINATED by ','
+    tblproperties ("skip.header.line.count" = "1");
+
+
+
 
 ## 2. Dump the data inside the hdfs in the given schema location.
+        
 
 ## 3. List of all agents' names.
 
@@ -184,3 +203,81 @@ for line in sys.stdin:
 - 9259
 
   SELECT sum(feedback) as total_feedback FROM agent_performance;
+
+## 15. Total contribution hour for each and every agents weekly basis
+
+    with agent_duration as (SELECT id,agent_name,(split(date,'-')[0])*1 as day,split(duration,':') as d FROM agent_logging_report)
+            SELECT
+             agent_name,sum(d_seconds)/3600 as duration_hours,week
+         FROM
+             (SELECT id,agent_name,
+             CASE
+                when day > 24 then 4
+                when day > 16 then 3
+                when day > 8 then 4
+                else 1
+            End as week,
+
+             (d[0]*3600 + d[1]*60 + d[2]*1) as d_seconds  FROM agent_duration ) as agent_d_seconds
+         GROUP BY
+             agent_name,
+             week;
+
+![agent_weekly_hour_duration](Screenshots/Agent_weekly_hour_duration.png)
+
+
+## 16. Perform inner join, left join and right join based on the agent column and after joining the table export that data into your local system.
+
+
+
+
+
+
+
+## 17. Perform partitioning on top of the agent column and then on top of that perform bucketing for each partitioning.
+
+''' bash
+
+    CREATE TABLE agent_performance_partition
+       (
+          id int,
+          date string,
+          total_chats int,
+          average_response_time string,
+          average_resolution_time string,
+          rating float,
+          feedback int
+          )
+       partitioned by (agent_name string);
+
+
+       hive.exec.dynamic.partition.mode=nonstrict;
+
+       INSERT OVERWRITE TABLE agent_performance_partition PARTITION(agent_name)
+
+       SELECT
+            id, date, total_chats, average_response_time, average_resolution_time, rating, feedback,agent_name
+        FROM
+            agent_performance;
+
+
+
+
+        CREATE TABLE agent_performance_partition
+       (
+          id int,
+          date string,
+          total_chats int,
+          average_response_time string,
+          average_resolution_time string,
+          rating float,
+          feedback int,
+          agent_name
+          )
+          clustered by (id)
+          sorted by (id)
+          into 3 buckets;
+
+     INSERT OVERWRITE table agent_performance_part_bucket SELECT * FROM agent_performance_partition;
+
+'''
