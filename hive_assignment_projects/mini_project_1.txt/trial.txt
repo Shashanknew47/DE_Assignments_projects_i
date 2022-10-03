@@ -69,3 +69,6 @@ with agent_duration as (SELECT id,agent_name,date,split(duration,':') as d FROM 
          GROUP BY
              agent_name,
              day;
+
+
+=================================
