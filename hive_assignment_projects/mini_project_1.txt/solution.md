@@ -43,6 +43,56 @@ Note: both files are csv files.)]
     hadoop fs -put /data/Hive_Assingments/AgentLogingReport /tmp
     hadoop fs -put /data/Hive_Assingments/AgentPerformance /tmp
 
+-----
+    CREATE TABLE agent_performance_date
+     (
+        id int,
+        date date,
+        agent_name string,
+        total_chats int,
+        average_response_time string,
+        average_resolution_time string,
+        rating float,
+        feedback int
+     )
+     row format delimited
+     fields terminated by ','
+
+
+
+    INSERT OVERWRITE TABLE agent_performance_date
+        SELECT
+         id,
+         from_unixtime(unix_timestamp(date,'MM/dd/yyyy'),'yyyy-MM-dd'),
+         agent_name, total_chats, average_response_time, average_resolution_time, rating, feedback
+         FROM
+         agent_performance;
+
+
+---
+     CREATE TABLE agent_logging_report_date
+     (
+        id int,
+        agent_name varchar(40),
+        date date,
+        login_time string,
+        logout_time string,
+        duration string
+        )
+     row format delimited
+     fields terminated by ',';
+
+    INSERT OVERWRITE TABLE agent_logging_report_date
+        SELECT
+         id,
+         agent_name,
+         from_unixtime(unix_timestamp(date,'dd-MMM-yyyy'),'yyyy-MM-dd'),
+         login_time, logout_time, duration
+        FROM
+         agent_logging_report;
+
+---
+
 
 ## 3. List of all agents' names.
 
@@ -51,6 +101,27 @@ Note: both files are csv files.)]
 ## 4. Find out agent average rating.
 
     SELECT agent_name, avg(rating) as avg_rating FROM agent_performance_part_bucket WHERE total_chats > 0 GROUP BY agent_name;
+
+    agent_name	avg_rating
+    Aditya Shinde	4.500833352406819
+    Aditya_iot 	4.138823537265553
+    Ameya Jain	4.43933334350586
+    Anirudh 	2.7642857006617954
+    Ankitjha 	2.6666666666666665
+    Anurag Tiwari	2.75
+    Aravind 	4.674285752432687
+    Ashad Nasim	2.5
+    Ayushi Mishra	4.352499961853027
+    Bharath 	4.711052618528667
+    Boktiar Ahmed Bappy	4.116923057115995
+    Chaitra K Hiremath	4.323333303133647
+    Deepranjan Gupta	4.12380956468128
+    Dibyanshu 	0.0
+    Harikrishnan Shaji	4.167894714757016
+    Hitesh Choudhary	0.0
+    Hrisikesh Neogi	4.480476186389015
+    Ishawant Kumar	4.42916668454806
+    Jawala Prakash	4.166400022506714
 
 
 ---
@@ -131,7 +202,8 @@ Note: both files are csv files.)]
 
    44
 
-- Number of feedback agent have received more than 4.5.
+- Number of feedback agent have received more than 4.5
+
     SELECT  sum(feedback) FROM agent_performance WHERE feedback > 4.5;
 
     8976
