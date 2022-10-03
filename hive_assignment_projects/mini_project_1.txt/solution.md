@@ -50,31 +50,30 @@ Note: both files are csv files.)]
 
 ## 4. Find out agent average rating.
 
-    hive> SELECT avg(rating) as avg_rating FROM agent_performance_part_bucket;
+    SELECT agent_name, avg(rating) as avg_rating FROM agent_performance_part_bucket WHERE total_chats > 0 GROUP BY agent_name;
 
-    avg_rating
-    1.4609629649255012
-    Time taken: 46.589 seconds, Fetched: 1 row(s)
-    hive>
 
 ---
 ## 5. Total working days for each agents
+    SELECT agent_name, count(date) as t_w_days (SELECT distinct agent_name, date FROM agent_logging_report) as total_w_days;
 
-
-#### 5.1
-
-    - 30 days for each agent
-
-#### 5.2 **Query**
-
-    with unique_table as (SELECT distinct agent_name, date FROM agent_performance_part_bucket)
-
-    SELECT agent_name, count(date) as working_day FROM unique_table GROUP BY agent_name;
-
-#### 5.3 **Screen Shot of result**
-
-![working-day-of-each-agent](Screenshots/days_of_agent_working.png)
-
+    agent_name	t_w_days
+    Aditya Shinde	1
+    Aditya_iot	8
+    Amersh	2
+    Ameya Jain	7
+    Ankitjha	2
+    Anurag Tiwari	10
+    Aravind	7
+    Ayushi Mishra	9
+    Bharath	8
+    Boktiar Ahmed Bappy	9
+    Chaitra K Hiremath	7
+    Deepranjan Gupta	10
+    Dibyanshu	9
+    Harikrishnan Shaji	9
+    Hrisikesh Neogi	9
+    Hyder Abbas	2
 ---
 ## 6. Total query that each agent have taken
 
