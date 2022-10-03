@@ -6,6 +6,7 @@
 Note: both files are csv files.)]
 
 ## 1. Create a schema based on the given dataset
+'''
 
         CREATE TABLE
             (
@@ -20,6 +21,9 @@ Note: both files are csv files.)]
             fields terminated by ','
             tblproperties ("skip.header.line.count" = "1");
 
+'''
+
+'''
 
         CREATE TABLE agent_performance
        (
@@ -36,14 +40,16 @@ Note: both files are csv files.)]
     fields TERMINATED by ','
     tblproperties ("skip.header.line.count" = "1");
 
-
-
+'''
 
 ## 2. Dump the data inside the hdfs in the given schema location.
+
     hadoop fs -put /data/Hive_Assingments/AgentLogingReport /tmp
     hadoop fs -put /data/Hive_Assingments/AgentPerformance /tmp
 
------
+---
+'''
+
     CREATE TABLE agent_performance_date
      (
         id int,
@@ -58,7 +64,9 @@ Note: both files are csv files.)]
      row format delimited
      fields terminated by ','
 
+'''
 
+'''
 
     INSERT OVERWRITE TABLE agent_performance_date
         SELECT
@@ -67,9 +75,10 @@ Note: both files are csv files.)]
          agent_name, total_chats, average_response_time, average_resolution_time, rating, feedback
          FROM
          agent_performance;
-
-
+'''
 ---
+'''
+
      CREATE TABLE agent_logging_report_date
      (
         id int,
@@ -91,8 +100,8 @@ Note: both files are csv files.)]
         FROM
          agent_logging_report;
 
+'''
 ---
-
 
 ## 3. List of all agents' names.
 
@@ -100,7 +109,12 @@ Note: both files are csv files.)]
 
 ## 4. Find out agent average rating.
 
+'''
+
     SELECT agent_name, avg(rating) as avg_rating FROM agent_performance_part_bucket WHERE total_chats > 0 GROUP BY agent_name;
+
+'''
+
 
     agent_name	avg_rating
     Aditya Shinde	4.500833352406819
@@ -123,10 +137,14 @@ Note: both files are csv files.)]
     Ishawant Kumar	4.42916668454806
     Jawala Prakash	4.166400022506714
 
-
 ---
+
 ## 5. Total working days for each agents
+
+'''
+
     SELECT agent_name, count(date) as t_w_days (SELECT distinct agent_name, date FROM agent_logging_report) as total_w_days;
+'''
 
     agent_name	t_w_days
     Aditya Shinde	1
@@ -145,24 +163,66 @@ Note: both files are csv files.)]
     Harikrishnan Shaji	9
     Hrisikesh Neogi	9
     Hyder Abbas	2
+
 ---
+
 ## 6. Total query that each agent have taken
+'''
 
     SELECT agent_name, sum(total_chats) FROM agent_performance Group by agent_name;
+'''
+
+    OK
+    Abhishek 	0
+    Aditya 	0
+    Aditya Shinde	277
+    Aditya_iot 	231
+    Amersh 	0
+    Ameya Jain	322
+    Anirudh 	81
+    Ankit Sharma	0
+    Ankitjha 	5
+    Anurag Tiwari	4
+    Aravind 	366
+    Ashad Nasim	18
+    Ashish 	0
+    Ayushi Mishra	514
+
 
 ## 7. Total Feedback that each agent have received
+'''
 
     SELECT agent_name, sum(feedback) FROM agent_performance Group by agent_name;
+'''
+
+    OK
+    Abhishek 	0
+    Aditya 	0
+    Aditya Shinde	153
+    Aditya_iot 	131
+    Amersh 	0
+    Ameya Jain	228
+    Anirudh 	39
+    Ankit Sharma	0
+    Ankitjha 	3
+    Anurag Tiwari	3
+    Aravind 	233
+    Ashad Nasim	9
+
 
 
 ## 8. Agent name who have average rating between 3.5 to 4
-      SELECT agent_name, avg(rating) FROM agent_performance WHERE total_chats > 0 GROUP BY agent_name having avg(rating) between 3.5 and 4;
-![average rating between 3.5 to 4](Screenshots/rating_b_3_4.png)
 
+      SELECT agent_name, avg(rating) FROM agent_performance WHERE total_chats > 0 GROUP BY agent_name having avg(rating) between 3.5 and 4;
+
+![average rating between 3.5 to 4](Screenshots/rating_b_3_4.png)
 
 ## 9. Agent name who have rating less than 3.5
 
+'''
+
     SELECT agent_name, avg(rating) FROM agent_performance WHERE total_chats > 0 GROUP BY agent_name having avg(rating) < 3.5;
+'''
 
     Anirudh 	2.7642857006617954
     Ankitjha 	2.6666666666666665
@@ -176,9 +236,13 @@ Note: both files are csv files.)]
     Samprit 	0.0
     Tarun 	1.5
     Vivek 	3.0039999961853026
+
 ## 10. Agent name who have rating more than 4.5
 
+'''
+
     SELECT agent_name, avg(rating) FROM agent_performance WHERE total_chats > 0 GROUP BY agent_name having avg(rating) > 4.5;
+'''
 
     Aditya Shinde	4.500833352406819
     Aravind 	4.674285752432687
@@ -192,26 +256,34 @@ Note: both files are csv files.)]
     Suraj S Bilgi	4.680000066757202
     Wasim 	4.500000029802322
 
-
 ---
+
 ## 11. How many feedback agents have received more than 4.5 average
 
-- count of  agents who have received average more than 4.5 feedback
+- count of agents who have received average more than 4.5 feedback
 
-   SELECT count(agent_name) FROM (SELECT agent_name,avg(feedback) from agent_performance WHERE total_chats >0 GROUP by agent_name HAVING avg(feedback) > 4.5) as agent_name_feedback;
+'''
 
-   44
+    SELECT count(agent_name) FROM (SELECT agent_name,avg(feedback) from agent_performance WHERE total_chats >0 GROUP by agent_name HAVING avg(feedback) > 4.5) as agent_name_feedback;
+
+'''
+
+    44
 
 - Number of feedback agent have received more than 4.5
 
-    SELECT  sum(feedback) FROM agent_performance WHERE feedback > 4.5;
+'''
+
+    SELECT sum(feedback) FROM agent_performance WHERE feedback > 4.5;
+
+'''
 
     8976
 
-
-
-
 ## 12. average weekly response time for each agent
+
+'''
+
     with response_time_t as (SELECT agent_name, WEEKOFYEAR(date) as year_week, split(average_response_time,':') as ts FROM agent_performance_date WHERE total_chats >0)
 
          SELECT
@@ -221,6 +293,7 @@ Note: both files are csv files.)]
 
           GROUP BY
              agent_name, year_week;
+'''
 
 
     agent_name	year_week	avg_response_seconds
@@ -242,6 +315,9 @@ Note: both files are csv files.)]
     Anurag Tiwari	27	126.5
 
 ## 13. average weekly resolution time for each agents
+
+'''
+
     with resolution_time_t as (SELECT agent_name, WEEKOFYEAR(date) as year_week, split(average_resolution_time,':') as ts FROM agent_performance_date WHERE total_chats >0)
 
          SELECT
@@ -251,6 +327,8 @@ Note: both files are csv files.)]
 
           GROUP BY
              agent_name, year_week;
+
+'''
 
 
     Total MapReduce CPU Time Spent: 0 msec
@@ -282,9 +360,8 @@ Note: both files are csv files.)]
     Ayushi Mishra	29	1107.4285714285713
     Ayushi Mishra	30	1104.6
 
-
-
 ---
+
 ## 14. Find the number of chat on which they have received a feedback
 
 - 9259
@@ -312,23 +389,20 @@ Note: both files are csv files.)]
 
 ![agent_weekly_hour_duration](Screenshots/Agent_weekly_hour_duration.png)
 
-
 ## 16. Perform inner join, left join and right join based on the agent column and after joining the table export that data into your local system.
 
 - inner join
 
-    insert overwrite local directory '/join_agent_tables/inner_join'
-    row format delimited
-    fields terminated by ','
+  insert overwrite local directory '/join_agent_tables/inner_join'
+  row format delimited
+  fields terminated by ','
 
-    SELECT
-     log.id, log.agent_name, performance.date, log.duration, performance.total_chats
+  SELECT
+  log.id, log.agent_name, performance.date, log.duration, performance.total_chats
 
-    FROM
-        agent_logging_report_date as log join agent_performance_date as performance
-        on log.agent_name = performance.agent_name limit 50;
-
-
+  FROM
+  agent_logging_report_date as log join agent_performance_date as performance
+  on log.agent_name = performance.agent_name limit 50;
 
 - **left join**
 
@@ -342,8 +416,6 @@ Note: both files are csv files.)]
              agent_logging_report_date as log left join agent_performance_date as performance
           on log.agent_name = performance.agent_name;
 
-
-
 - **right join**
 
       insert overwrite local directory '/join_agent_tables/right_join'
@@ -356,12 +428,7 @@ Note: both files are csv files.)]
             agent_logging_report_date as log right join agent_performance_date as performance
                 on log.agent_name = performance.agent_name limit 50;
 
-
-
-
 ## 17. Perform partitioning on top of the agent column and then on top of that perform bucketing for each partitioning.
-
-
 
     CREATE TABLE agent_performance_partition
        (
@@ -404,7 +471,6 @@ Note: both files are csv files.)]
           into 3 buckets;
 
      INSERT OVERWRITE table agent_performance_part_bucket SELECT * FROM agent_performance_partition;
-
 
 ## 18 A udf experiment on weekly average reponse of each agent.
 
