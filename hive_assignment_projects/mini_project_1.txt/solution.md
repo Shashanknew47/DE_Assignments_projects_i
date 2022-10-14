@@ -6,7 +6,7 @@
 Note: both files are csv files.)]
 
 ## 1. Create a schema based on the given dataset
-'''
+```
 
         CREATE TABLE
             (
@@ -21,9 +21,9 @@ Note: both files are csv files.)]
             fields terminated by ','
             tblproperties ("skip.header.line.count" = "1");
 
-'''
+```
 
-'''
+```
 
         CREATE TABLE agent_performance
        (
@@ -40,7 +40,7 @@ Note: both files are csv files.)]
     fields TERMINATED by ','
     tblproperties ("skip.header.line.count" = "1");
 
-'''
+```
 
 ## 2. Dump the data inside the hdfs in the given schema location.
 
@@ -48,7 +48,7 @@ Note: both files are csv files.)]
     hadoop fs -put /data/Hive_Assingments/AgentPerformance /tmp
 
 ---
-'''
+```
 
     CREATE TABLE agent_performance_date
      (
@@ -64,9 +64,9 @@ Note: both files are csv files.)]
      row format delimited
      fields terminated by ','
 
-'''
+```
 
-'''
+```
 
     INSERT OVERWRITE TABLE agent_performance_date
         SELECT
@@ -75,9 +75,9 @@ Note: both files are csv files.)]
          agent_name, total_chats, average_response_time, average_resolution_time, rating, feedback
          FROM
          agent_performance;
-'''
+```
 ---
-'''
+```
 
      CREATE TABLE agent_logging_report_date
      (
@@ -100,7 +100,7 @@ Note: both files are csv files.)]
         FROM
          agent_logging_report;
 
-'''
+```
 ---
 
 ## 3. List of all agents' names.
@@ -109,11 +109,11 @@ Note: both files are csv files.)]
 
 ## 4. Find out agent average rating.
 
-'''
+```
 
     SELECT agent_name, avg(rating) as avg_rating FROM agent_performance_part_bucket WHERE total_chats > 0 GROUP BY agent_name;
 
-'''
+```
 
 
     agent_name	avg_rating
@@ -141,10 +141,10 @@ Note: both files are csv files.)]
 
 ## 5. Total working days for each agents
 
-'''
+```
 
     SELECT agent_name, count(date) as t_w_days (SELECT distinct agent_name, date FROM agent_logging_report) as total_w_days;
-'''
+```
 
     agent_name	t_w_days
     Aditya Shinde	1
@@ -167,10 +167,10 @@ Note: both files are csv files.)]
 ---
 
 ## 6. Total query that each agent have taken
-'''
+```
 
     SELECT agent_name, sum(total_chats) FROM agent_performance Group by agent_name;
-'''
+```
 
     OK
     Abhishek 	0
@@ -190,10 +190,10 @@ Note: both files are csv files.)]
 
 
 ## 7. Total Feedback that each agent have received
-'''
+```
 
     SELECT agent_name, sum(feedback) FROM agent_performance Group by agent_name;
-'''
+```
 
     OK
     Abhishek 	0
@@ -219,10 +219,10 @@ Note: both files are csv files.)]
 
 ## 9. Agent name who have rating less than 3.5
 
-'''
+```
 
     SELECT agent_name, avg(rating) FROM agent_performance WHERE total_chats > 0 GROUP BY agent_name having avg(rating) < 3.5;
-'''
+```
 
     Anirudh 	2.7642857006617954
     Ankitjha 	2.6666666666666665
@@ -239,10 +239,10 @@ Note: both files are csv files.)]
 
 ## 10. Agent name who have rating more than 4.5
 
-'''
+```
 
     SELECT agent_name, avg(rating) FROM agent_performance WHERE total_chats > 0 GROUP BY agent_name having avg(rating) > 4.5;
-'''
+```
 
     Aditya Shinde	4.500833352406819
     Aravind 	4.674285752432687
@@ -262,27 +262,27 @@ Note: both files are csv files.)]
 
 - count of agents who have received average more than 4.5 feedback
 
-'''
+```
 
     SELECT count(agent_name) FROM (SELECT agent_name,avg(feedback) from agent_performance WHERE total_chats >0 GROUP by agent_name HAVING avg(feedback) > 4.5) as agent_name_feedback;
 
-'''
+```
 
     44
 
 - Number of feedback agent have received more than 4.5
 
-'''
+```
 
     SELECT sum(feedback) FROM agent_performance WHERE feedback > 4.5;
 
-'''
+```
 
     8976
 
 ## 12. average weekly response time for each agent
 
-'''
+```
 
     with response_time_t as (SELECT agent_name, WEEKOFYEAR(date) as year_week, split(average_response_time,':') as ts FROM agent_performance_date WHERE total_chats >0)
 
@@ -293,7 +293,7 @@ Note: both files are csv files.)]
 
           GROUP BY
              agent_name, year_week;
-'''
+```
 
 
     agent_name	year_week	avg_response_seconds
@@ -316,7 +316,7 @@ Note: both files are csv files.)]
 
 ## 13. average weekly resolution time for each agents
 
-'''
+```
 
     with resolution_time_t as (SELECT agent_name, WEEKOFYEAR(date) as year_week, split(average_resolution_time,':') as ts FROM agent_performance_date WHERE total_chats >0)
 
@@ -328,7 +328,7 @@ Note: both files are csv files.)]
           GROUP BY
              agent_name, year_week;
 
-'''
+```
 
 
     Total MapReduce CPU Time Spent: 0 msec
